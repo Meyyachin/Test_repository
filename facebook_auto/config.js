@@ -1,6 +1,5 @@
 module.exports = {
-    firstname : "Takuya",
-    lastname : "Satoyama",
-    email : "takuyasatoyama@outlook.com",
-    password : "123456",
+    fullname : "Takuya S",
+    email : "takuyas1@outlook.com",
+    password : "12345678",
 }

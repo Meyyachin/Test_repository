@@ -1,37 +1,31 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
-
+const userinfo = require('./config');
 async function autoSignUp() {
+
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
-  // Navigate to Facebook sign-up page
-  await page.goto('https://www.facebook.com/signup');
-  // Fill the sign-up form
-  await page.type('#u_0_n', 'FirstName'); // First Name
-  await page.type('#u_0_p', 'LastName');  // Last Name
-  await page.type('#u_0_s', 'email@example.com'); // Email
-  await page.type('#u_0_v', 'email@example.com'); // Re-enter Email
-  await page.type('#u_0_x', 'Password123'); // Password
-  // Select birthday
-  await page.select('#day', '15');
-  await page.select('#month', '6');
-  await page.select('#year', '1990');
-  // Select gender
-  await page.click('#u_0_6'); // Male, for example
-  // Submit the form
-  await page.click('#u_0_13');
-  // Wait for navigation after submitting form
+  await page.goto('https://inner.arkaroam.com/register');
+  await page.type('#username', userinfo.fullname); // First Name
+  await page.type('#email', userinfo.email);  // Last Name
+  await page.type('#password', userinfo.password); // Email
+  await page.click('#btn_submit');
   await page.waitForNavigation();
-  // Assuming sign-up is successful, navigate to profile page
-  await page.goto('https://www.facebook.com/me');
-  // Wait for profile elements to load
-  await page.waitForSelector('img[alt="Profile picture"]', { visible: true });
+
+  await page.goto("https://inner.arkaroam.com/login");
+  await page.type('#email', userinfo.email);  // Last Name
+  await page.type('#password', userinfo.password); // Email
+  await page.click('#btn_login');
+  await page.waitForNavigation();
+
+  await page.goto("https://inner.arkaroam.com/account");
+
+  await page.waitForSelector('img[alt="Avatar"]', { visible: true });
   // Get profile details
   const profileDetails = await page.evaluate(() => {
-    const avatar = document.querySelector('img[alt="Profile picture"]').src;
-    const name = document.querySelector('span[id^="u_0_"]').innerText;
-    const fbId = document.querySelector('a[href^="/me"]').href.split('?id=')[1];
-    return { avatar, name, fbId };
+    const avatar = document.querySelector('img[alt="Avatar"]').src;
+    const name = document.querySelector('h5[id^="user"]').innerText;
+    return { avatar, name };
   });
   // Print and save profile details
   console.log(profileDetails);
